@@ -39,7 +39,11 @@ Follow these steps to set up your personal assistant:
    ```bash
    pip install -r requirements.txt
    ```
-6. **Start the Application**:
+
+6. **Change Assistant Image**:
+   Update the current `static/bot.png` image to reflect your preferred picture for the assistant. Ensure that your chosen image is in PNG format and named `bot.png` for seamless integration.
+
+7. **Start the Application**:
    Launch the CarloBot application with:
    ```bash
    python app.py
