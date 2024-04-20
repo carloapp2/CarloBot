@@ -6,6 +6,7 @@ from dotenv import load_dotenv
 from utils.processor import Processor
 from threading import Thread
 import time
+import pandas as pd
 from datetime import timedelta
 from apscheduler.schedulers.background import BackgroundScheduler
 from flask_login import LoginManager, UserMixin, login_user, login_required, logout_user
@@ -26,6 +27,8 @@ chat_histories = {}
 USERNAME = os.getenv("USERNAME")
 PASSWORD = os.getenv("PASSWORD")
 
+logs_file = "assistant_logs.csv"
+
 class User(UserMixin):
     def __init__(self, username):
         self.id = username
@@ -34,14 +37,14 @@ class User(UserMixin):
 def load_user(user_id):
     return User(user_id)
 
-def generate_data(question, summary, log=False):
-    answer, docs = processor.respond_to_query(question, summary=summary, stream=True, log=log)
-    return answer
+def generate_answer(question, summary, log=False):
+    rephrased_ques, answer, docs = processor.respond_to_query(question, summary=summary, stream=True, log=log)
+    return rephrased_ques, answer
 
-def save_history(session_id, question, summary):
+def save_history(session_id, question, summary, qa_id):
     history = chat_histories[session_id]
     history["wait"] = True
-    response_data = generate_data(question, summary)
+    rephrased_ques, response_data = generate_answer(question, summary)
     response_text = ''
     for chunk in response_data:
         response_text += chunk
@@ -50,8 +53,24 @@ def save_history(session_id, question, summary):
     summary = processor.generate_chat_summary(question, answer, history["summary"])
     history["summary"] = summary
     history["wait"] = False
+    save_chats(session_id, qa_id, question, rephrased_ques, answer, summary)
     print("Chat Histories -", chat_histories)
 
+def save_chats(session_id, qa_id, question, rephrased_ques, answer, summary):
+    if os.path.exists(logs_file):
+        df = pd.read_csv(logs_file)
+    else:
+        df = pd.DataFrame()
+    row = pd.DataFrame({'session_id': [session_id], 'qa_id': qa_id, 'question': [question], 'rephrased_question': [rephrased_ques], 
+                        'answer': [answer], 'summary': [summary], 'feedback': ['']})
+    df = pd.concat([df,row])
+    df.to_csv(logs_file, index=False)
+
+def save_feedback(qa_id, feedback):
+    df = pd.read_csv(logs_file)
+    df = df.fillna("")
+    df.loc[df['qa_id']==qa_id, 'feedback'] = feedback
+    df.to_csv(logs_file, index=False)
 
 def clear_chat_history(timeout=3600):
     session_ids = list(chat_histories.keys())
@@ -91,10 +110,28 @@ def stream_data():
         time.sleep(1)
     
     summary = history["summary"]
-
-    processing_thread = Thread(target=save_history, args=(session_id, question, summary))
+    qa_id = str(uuid.uuid4())
+    processing_thread = Thread(target=save_history, args=(session_id, question, summary, qa_id))
     processing_thread.start()
-    return Response(generate_data(question, summary, log=True), content_type='text/event-stream')
+    _, answer = generate_answer(question, summary, log=True)
+    return Response(answer, content_type='text/event-stream'), qa_id
+
+@app.route('/feedback', methods = ["POST"])
+def get_feedback():
+    data = request.get_json(force=True)
+    print(data)
+    session_id = data["session_id"]
+    qa_id = data["qa_id"]
+    feedback = data["feedback"]
+
+    history = chat_histories[session_id]
+    history["time"] = time.time()
+    while history["wait"]:
+        print("Waiting for summary to complete....")
+        time.sleep(1)
+
+    save_feedback(qa_id, feedback)
+    return '', 204
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():

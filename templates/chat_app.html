@@ -10,6 +10,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@4.5.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://unpkg.com/carbon-components@10/css/carbon-components.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
     <style type="text/css">
         body {
             background-color: #f4f7f6;
@@ -235,6 +236,37 @@
             height: 0
         }
 
+        .thumbs {
+        margin-top: 1%;
+        }
+
+        .thumbs label {
+        cursor: pointer;
+        margin-right: 1%;
+        }
+
+        .thumbs input[type="radio"] {
+        display: none;
+        }
+
+        .thumbs input[type="radio"] + label i {
+        font-size: 24px; /* Initial size */
+        color: #b0c2ff; /* Initial color */
+        transition: transform 0.3s ease, color 0.3s ease; /* Add color transition */
+        }
+
+        .thumbs input[type="radio"]:checked + label i.fa-thumbs-up {
+        color: blue; /* Change color to blue when thumbs up is selected */
+        }
+
+        .thumbs input[type="radio"]:checked + label i.fa-thumbs-down {
+        color: red; /* Change color to red when thumbs down is selected */
+        }
+
+        .thumbs input[type="radio"]:hover + label i {
+        transform: scale(1.1); /* Enlarge on hover */
+        }
+
         @media only screen and (max-width: 767px) {
             .chat-app .people-list {
                 height: 465px;
@@ -385,6 +417,54 @@
                 document.getElementById("submit_ques").click();
             }
         });
+        function feedback_button(name, parent_ele) {
+            // Create div element with class "thumbs"
+            var thumbsDiv = document.createElement("div");
+            thumbsDiv.className = "thumbs";
+
+            // Create thumbs-up input
+            var thumbsUpInput = document.createElement("input");
+            thumbsUpInput.type = "radio";
+            thumbsUpInput.id = name + "up";
+            thumbsUpInput.name = name;
+            thumbsUpInput.value = "positive";
+            thumbsUpInput.className = "thumbs-up";
+            thumbsUpInput.setAttribute("onclick", "saveFeedback(this.name, 'positive');");
+
+            // Create label for thumbs-up input
+            var thumbsUpLabel = document.createElement("label");
+            thumbsUpLabel.htmlFor = name + "up";
+            var thumbsUpIcon = document.createElement("i");
+            thumbsUpIcon.className = "fa fa-thumbs-up";
+            thumbsUpLabel.appendChild(thumbsUpIcon);
+
+            // Append thumbs-up input and label to thumbs div
+            thumbsDiv.appendChild(thumbsUpInput);
+            thumbsDiv.appendChild(thumbsUpLabel);
+
+            // Create thumbs-down input
+            var thumbsDownInput = document.createElement("input");
+            thumbsDownInput.type = "radio";
+            thumbsDownInput.id = name + "down";
+            thumbsDownInput.name = name;
+            thumbsDownInput.value = "negative";
+            thumbsDownInput.className = "thumbs-down";
+            thumbsDownInput.setAttribute("onclick", "saveFeedback(this.name, 'negative');");
+
+            // Create label for thumbs-down input
+            var thumbsDownLabel = document.createElement("label");
+            thumbsDownLabel.htmlFor = name + "down";
+            var thumbsDownIcon = document.createElement("i");
+            thumbsDownIcon.className = "fa fa-thumbs-down";
+            thumbsDownLabel.appendChild(thumbsDownIcon);
+
+            // Append thumbs-down input and label to thumbs div
+            thumbsDiv.appendChild(thumbsDownInput);
+            thumbsDiv.appendChild(thumbsDownLabel);
+
+            parent_ele.appendChild(thumbsDiv);
+        }
+        
         function botMessage(message) {
             // Create li element
             var li = document.createElement("li");
@@ -495,10 +575,10 @@
                 method: "POST", headers: {
                     'Content-Type': 'application/json'
                 },
-                body: JSON.stringify({ "question": ques, "session_id": session_id })
+                body: JSON.stringify({ "question": ques, "session_id": session_id})
             },);
+            const name = response.statusText;
             document.getElementById("loading").remove();
-            console.log(response)
             // Create a new TextDecoder to decode the streamed response text
             const decoder = new TextDecoder();
 
@@ -519,6 +599,16 @@
             }
             const html = marked.parse(chunks);
             chatlog.innerHTML = html;
+            feedback_button(name, chatlog);
+        }
+
+        async function saveFeedback(qa_id, feedback) {
+            await fetch("/feedback", {
+                method: "POST", headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ "session_id": session_id, "qa_id": qa_id, "feedback": feedback})
+            },);
         }
     </script>
 </body>

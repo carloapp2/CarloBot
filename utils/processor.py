@@ -166,7 +166,8 @@ class Processor:
         if log:
             print(query_class)
         if query_class=="basic conversational phrases":
-            return self.get_greetings_answer(orig_query, stream)
+            answer, docs = self.get_greetings_answer(orig_query, stream)
+            return query, answer, docs
         else:
             if summary:
                 query = self.rephrase_question(orig_query, summary)
@@ -175,4 +176,5 @@ class Processor:
             if log:
                 print("Original Question -", orig_query)
                 print("Rephrased Question -", query)
-            return self.get_answer(query, num_chunks, stream) 
+            answer, docs = self.get_answer(query, num_chunks, stream)
+            return query, answer, docs
