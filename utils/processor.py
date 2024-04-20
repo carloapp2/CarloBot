@@ -79,7 +79,7 @@ class Processor:
             doc_pdf = Document(page_content=pdf_txt.strip(), metadata={"file_path": file})
             all_data.append(doc_pdf)
 
-        text_splitter = RecursiveCharacterTextSplitter(chunk_size=1000)
+        text_splitter = RecursiveCharacterTextSplitter(chunk_size=1000, chunk_overlap=100)
         data = text_splitter.split_documents(all_data)
         self._retriever.delete_all_data()
         self._retriever.add_documents(data)
@@ -92,14 +92,15 @@ class Processor:
         else:
             data_txt = ""
         data_txt = data_txt.strip()
-        data_txt += "\n\n"
+        if data_txt != "":
+            data_txt += "\n\n"
         data_txt += f"-* {question}"
         data_txt += "\n"
         data_txt += answer
         with open(kb_path, "w") as f:
             f.write(data_txt)
         qa = question + "\n" + answer
-        text_splitter = RecursiveCharacterTextSplitter(chunk_size=2000)
+        text_splitter = RecursiveCharacterTextSplitter(chunk_size=1000, chunk_overlap=100)
         data = text_splitter.create_documents([qa], metadatas=[{"file_path": kb_path}])
         self._retriever.add_documents(data)
 
