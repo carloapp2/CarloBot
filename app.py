@@ -1,6 +1,7 @@
 from flask import Flask, Response, render_template, request, redirect, url_for, session
 import uuid
 import os
+import secrets;
 from dotenv import load_dotenv
 from utils.processor import Processor
 from threading import Thread
@@ -12,7 +13,7 @@ from flask_login import LoginManager, UserMixin, login_user, login_required, log
 load_dotenv()
 
 app = Flask(__name__)
-app.secret_key = os.getenv("SECRET_KEY")
+app.secret_key = secrets.token_hex()
 app.permanent_session_lifetime = timedelta(minutes=60)
 login_manager = LoginManager()
 login_manager.init_app(app)
