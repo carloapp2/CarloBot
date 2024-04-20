@@ -44,7 +44,7 @@ Follow these steps to set up your personal assistant:
    Update the current `static/bot.png` image to reflect your preferred picture for the assistant. Ensure that your chosen image is in PNG format and named `bot.png` for seamless integration.
 
 7. **Start the Application**:
-   Launch the CarloBot application with:
+   Launch the application with:
    ```bash
    python app.py
    ```
