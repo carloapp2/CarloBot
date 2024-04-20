@@ -1,0 +1,70 @@
+<html>
+
+<head>
+    <title>Add to Knowlegde Base</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="icon" type="image/x-icon" href="static/bee.ico">
+    <link rel="stylesheet" type="text/css"
+        href="static/css/bootstrap.min.css">
+    <link rel="stylesheet" type="text/css"
+        href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="https://unpkg.com/carbon-components@10/css/carbon-components.min.css">
+    <link rel="stylesheet" type="text/css" href="static/css/util.css">
+    <link rel="stylesheet" type="text/css" href="static/css/main.css">
+
+<body>
+    <div class="limiter">
+        <div class="container-login100">
+            <div class="wrap-qaform100" style="padding: 0px;">
+                <div class="container-login100-form-btn" style="justify-content: end; padding-top: 0px;">
+                    <a class="btn" href="/logout" style="width: auto;">
+                        Logout
+                    </a>
+                </div>
+                <div class="bx--loading-overlay" style="display: none;" id="loadingAnimation">
+                    <div data-loading class="bx--loading">
+                      <svg class="bx--loading__svg" viewBox="-75 -75 150 150">
+                        <title>Loading</title>
+                        <circle class="bx--loading__stroke" cx="0" cy="0" r="37.5" />
+                      </svg>
+                    </div>
+                </div>
+                <form action="/add_to_kb" method="post" class="validate-form" style="width:100%; padding: 50px 100px 100px 100px;" onsubmit="document.getElementById('loadingAnimation').style='display:flex';">
+                    <span class="login100-form-title">
+                        Add Question-Answer to Knowledge Base
+                    </span>
+                    <div class="text-center p-b-12">
+                        <span class="txt2">
+                            {{info_text}}
+                        </span>
+                    </div>
+                    <div class="wrap-input100">
+                        <input class="input100" type="text" name="question" placeholder="Question" required>
+                        <span class="focus-input100"></span>
+                        <span class="symbol-input100">
+                            <i class="fa fa-question" aria-hidden="true"></i>
+                        </span>
+                    </div>
+                    <div class="wrap-input100">
+                        <textarea class="input100" style="height: auto;" rows="7" name="answer" placeholder="&#10;&#10;&#10;Answer to the question" required></textarea>
+                        <span class="focus-input100"></span>
+                        <span class="symbol-input100">
+                            <i class="fa fa-file-text-o" aria-hidden="true"></i>
+                        </span>
+                    </div>
+                    <div class="container-login100-form-btn">
+                        <button class="login100-form-btn" type="submit">
+                            Submit
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <script src="static/js/jquery-3.2.1.min.js"></script>
+    <script src="static/js/tilt.jquery.min.js"></script>
+</body>
+
+</html>

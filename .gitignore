@@ -1,0 +1,5 @@
+.env
+.DS_Store
+rag_setup.ipynb
+__pycache__
+data/
