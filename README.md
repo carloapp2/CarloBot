@@ -1,5 +1,7 @@
 # CarloBot
 CarloBot is a Personal Assistant for Carlo that uses Generative AI.
+https://www.linkedin.com/in/carloappugliese/
+youtube.com/@GenAI4Biz
 
 ## Setup Instructions
 
