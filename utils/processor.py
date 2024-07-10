@@ -171,7 +171,7 @@ class Processor:
             print(query_class)
         if query_class=="basic conversational phrases":
             answer, docs = self.get_greetings_answer(orig_query, stream)
-            return query, answer, docs
+            return orig_query, answer, docs
         else:
             if summary:
                 query = self.rephrase_question(orig_query, summary)
