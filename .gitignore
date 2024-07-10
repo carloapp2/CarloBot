@@ -2,3 +2,4 @@
 .DS_Store
 rag_setup.ipynb
 __pycache__
+assistant_logs.csv
