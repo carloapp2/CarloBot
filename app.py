@@ -31,6 +31,9 @@ FULLNAME = os.getenv("FULLNAME")
 
 logs_file = "assistant_logs.csv"
 
+with open("default_questions.txt", "r") as f:
+    default_questions = f.read().split("\n")
+
 class User(UserMixin):
     def __init__(self, username):
         self.id = username
@@ -94,7 +97,7 @@ def index():
 
     # Create a new chat history for this session
     chat_histories[session_id] = {"summary": "", "wait": False, "time": time.time()}
-    return render_template('chat_app.html', session_id=session_id, botname=BOTNAME, fullname=FULLNAME)
+    return render_template('chat_app.html', session_id=session_id, botname=BOTNAME, fullname=FULLNAME, default_questions=default_questions)
 
 @app.route('/stream_data', methods = ["POST"])
 def stream_data():

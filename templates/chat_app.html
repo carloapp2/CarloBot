@@ -364,10 +364,10 @@
                                     <div class="message my-message">
                                         <div class="mb-2">Hi, this is {{botname}}. How can I help? You can ask questions
                                             like:</div>
-                                        <button type="button" onclick="getAnswer(this.innerHTML)"
-                                            class="bx--btn bx--btn--tertiary btn-max mb-2 mr-2">Who is {{fullname}}?</button>
-                                        <button type="button" onclick="getAnswer(this.innerHTML)"
-                                            class="bx--btn bx--btn--tertiary btn-max mb-2 mr-2">What is watsonx.ai?</button>
+                                        {% for question in default_questions %}
+                                            <button type="button" onclick="getAnswer(this.innerHTML)"
+                                                class="bx--btn bx--btn--tertiary btn-max mb-2 mr-2">{{question}}</button>
+                                        {% endfor %}
                                     </div>
                                 </li>
                             </ul>

@@ -49,7 +49,10 @@ Follow these steps to set up your personal assistant:
 6. **Change Assistant Image**:
    Update the current `static/bot.png` image to reflect your preferred picture for the assistant. Ensure that your chosen image is in PNG format and named `bot.png` for seamless integration.
 
-7. **Start the Application**:
+7. **Change Default Questions**:
+   Update the current `default_questions.txt` file with the questions that you want to display on the UI.
+
+8. **Start the Application**:
    Launch the application with:
    ```bash
    python app.py
