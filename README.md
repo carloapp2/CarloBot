@@ -17,6 +17,8 @@ Follow these steps to set up your personal assistant:
    IBM_CLOUD_URL=https://us-south.ml.cloud.ibm.com
    USERNAME=<username-for-admin-access>
    PASSWORD=<password-for-admin-access>
+   BOTNAME=<name-of-the-assistant>
+   FULLNAME=<name-of-person-whom-the-bot-is-representing>
    ```
 3. **Set Up Python Virtual Environment**:
    Create a Python virtual environment using the command:

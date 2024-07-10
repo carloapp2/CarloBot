@@ -26,6 +26,8 @@ chat_histories = {}
 
 USERNAME = os.getenv("USERNAME")
 PASSWORD = os.getenv("PASSWORD")
+BOTNAME = os.getenv("BOTNAME")
+FULLNAME = os.getenv("FULLNAME")
 
 logs_file = "assistant_logs.csv"
 
@@ -92,7 +94,7 @@ def index():
 
     # Create a new chat history for this session
     chat_histories[session_id] = {"summary": "", "wait": False, "time": time.time()}
-    return render_template('chat_app.html', session_id=session_id)
+    return render_template('chat_app.html', session_id=session_id, botname=BOTNAME, fullname=FULLNAME)
 
 @app.route('/stream_data', methods = ["POST"])
 def stream_data():

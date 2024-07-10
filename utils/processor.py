@@ -16,16 +16,20 @@ from langchain.schema import Document
 from langchain.text_splitter import RecursiveCharacterTextSplitter
 from langchain_community.document_loaders import PyMuPDFLoader
 from utils import prompts
+from dotenv import load_dotenv
 
 from langchain_ibm import WatsonxLLM
 from ibm_watsonx_ai.metanames import GenTextParamsMetaNames as GenParams
+
+load_dotenv()
 
 DEFAULT_RESPONSES = [
     f"Hmm.., I'm not sure I have the answer.",
     f"Apologize that I have limited data access in addressing this question.",
     f"Sorry, I can only the questions I have the data on."
 ]
-
+BOTNAME = os.getenv("BOTNAME")
+FULLNAME = os.getenv("FULLNAME")
 
 def watsonx_model(model_id="mistralai/mixtral-8x7b-instruct-v01", decoding_method='greedy', max_new_tokens=600, 
                   min_new_tokens=1, temperature=0.5, top_k=50, top_p=1, repetition_penalty=1):
@@ -108,7 +112,7 @@ class Processor:
         self._llm = watsonx_model(**llm_config)
     
     def __prompt_generation(self, context, question, fallback_response):
-        template = prompts.QA_prompt_mixtral.format(context=context, question=question, fallback_response=fallback_response)
+        template = prompts.QA_prompt_mixtral.format(context=context, question=question, fallback_response=fallback_response, botname=BOTNAME, fullname=FULLNAME)
         return template
     
     def generate_chat_summary(self, question, response, summary=""):
@@ -149,7 +153,7 @@ class Processor:
         return answer, docs
     
     def get_greetings_answer(self, query, stream=False):
-        prompt = prompts.greetings_prompt_mixtral.format(query=query)
+        prompt = prompts.greetings_prompt_mixtral.format(query=query, botname=BOTNAME, fullname=FULLNAME)
         if stream:
             answer = self._llm.stream(prompt)
         else:
